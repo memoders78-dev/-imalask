@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Şimal’e</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=Karla:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a1020;--bg2:#111a33;--green:#5ee6b0;--violet:#8b7cf6;--rose:#f4a6b8;--frost:#eaf2ff;--mute:#9fb0cf;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--frost);font:18px/1.75 Karla,system-ui,sans-serif}
+h1,h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;margin:0}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.hero{position:relative;min-height:94vh;display:grid;place-items:center;text-align:center;padding:4rem 1.5rem;overflow:hidden}
+.aurora{position:absolute;inset:-20%;background:
+radial-gradient(40% 30% at 30% 25%,rgba(94,230,176,.35),transparent 70%),
+radial-gradient(45% 35% at 70% 20%,rgba(139,124,246,.35),transparent 70%),
+radial-gradient(40% 25% at 50% 45%,rgba(244,166,184,.18),transparent 70%);
+filter:blur(30px);animation:drift 18s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate3d(4%,6%,0) rotate(4deg) scale(1.08)}}
+#sky{position:absolute;inset:0;width:100%;height:100%}
+.hero>div{position:relative}
+.hero h1{font-size:clamp(4.5rem,22vw,13rem);font-style:italic;line-height:.95;letter-spacing:.01em;
+background:linear-gradient(100deg,var(--green),var(--frost) 45%,var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:clamp(1.3rem,3.5vw,1.9rem);color:var(--frost);margin:1rem auto 0;max-width:30rem}
+.hero a{display:inline-block;margin-top:2.2rem;color:var(--mute);text-decoration:none;border-bottom:1px solid var(--mute);padding-bottom:2px}
+section{max-width:52rem;margin:0 auto;padding:5rem 1.5rem}
+h2{font-size:clamp(2rem,5vw,3rem);font-style:italic;margin-bottom:.8rem}
+.lead{color:var(--mute);max-width:34rem;margin:0}
+.map{position:relative;height:22rem;margin:2.5rem 0 1rem;background:linear-gradient(var(--bg2),var(--bg));border:1px solid #223158;border-radius:1rem}
+.star{position:absolute;width:2.75rem;height:2.75rem;margin:-1.375rem 0 0 -1.375rem;border:0;background:none;cursor:pointer;border-radius:50%}
+.star::after{content:"";position:absolute;inset:.9rem;border-radius:50%;background:var(--frost);box-shadow:0 0 14px 4px rgba(234,242,255,.55);transition:background .3s,box-shadow .3s,transform .3s}
+.star[aria-pressed=true]::after{background:var(--rose);box-shadow:0 0 22px 8px rgba(244,166,184,.7);transform:scale(1.5)}
+#lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#reason{min-height:5.5rem;font-family:"Cormorant Garamond",serif;font-style:italic;font-size:1.7rem;line-height:1.35;max-width:36rem}
+.since{background:var(--bg2);text-align:center}
+.since .in{max-width:34rem;margin:0 auto;padding:4.5rem 1.5rem}
+.since label{color:var(--mute)}
+.since input{font:inherit;color:var(--frost);background:var(--bg);border:1px solid #2d3f6e;border-radius:.5rem;padding:.5rem .8rem;margin-left:.5rem;color-scheme:dark}
+#days{font-family:"Cormorant Garamond",serif;font-size:clamp(4rem,16vw,8rem);line-height:1.1;color:var(--green);min-height:1.1em}
+.letter{max-width:36rem;font-family:"Cormorant Garamond",serif;font-size:1.45rem;line-height:1.6}
+.letter p{margin:0 0 1.2rem}
+.sign{color:var(--rose);font-style:italic}
+footer{text-align:center;color:var(--mute);padding:2rem 1.5rem 3rem;font-size:.95rem}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.aurora{animation:none}*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="hero">
+<div class="aurora" aria-hidden="true"></div>
+<canvas id="sky" aria-hidden="true"></canvas>
+<div>
+<h1>Şimal</h1>
+<p>Yönümü kaybettiğimde bile hep sana bakıyorum.</p>
+<a href="#yildizlar">Seni anlatayım</a>
+</div>
+</header>
+
+<section id="yildizlar">
+<h2>Gökyüzümdeki yıldızlar</h2>
+<p class="lead">Seni sevmemin bir sürü sebebi var. Yıldızlara dokun, birer birer ışıklansınlar.</p>
+<div class="map" id="map"><svg id="lines" aria-hidden="true"></svg></div>
+<p id="reason" aria-live="polite">Bir yıldız seç.</p>
+</section>
+
+<div class="since">
+<div class="in">
+<h2>Birlikte geçen günler</h2>
+<p><label>Başladığımız gün <input type="date" id="date"></label></p>
+<div id="days" aria-live="polite">0</div>
+<p id="dayText" class="lead" style="margin:0 auto">Tarihi seç, günleri birlikte sayalım.</p>
+</div>
+</div>
+
+<section>
+<h2>Sana mektup</h2>
+<div class="letter">
+<p>Şimal,</p>
+<p>Adın kuzey demek. Pusulam nereye dönerse dönsün, ibre hep sende duruyor.</p>
+<p>Sen gülünce günüm başlıyor, sen susunca bile yanımda huzur buluyorum. Seni sevmek bana ev gibi geliyor.</p>
+<p>Ne kadar uzağa gidersem gideyim, dönüşümün adresi sensin.</p>
+<p class="sign">Seni çok seviyorum.</p>
+</div>
+</section>
+
+<footer>Şimal için, sevgiyle yapıldı.</footer>
+
+<script>
+(function(){
+var reasons=[
+["Gülüşün","Gülüşün bir odayı aydınlatmaya yetiyor."],
+["Sesin","Sesini duymak, yorgun bir günün en güzel molası."],
+["Yanındaki huzur","Yanındayken acele etmem gerekmiyor, her şey yerli yerinde."],
+["Güçlü duruşun","Zor günlerde bile ayakta kalışına hayranım."],
+["Küçük ayrıntılar","Fark etmeden yaptığın küçük şeyler beni en çok etkiliyor."],
+["Sen olduğun için","Sadece sen olduğun için seviyorum."]];
+var pos=[[14,62],[30,28],[48,58],[62,24],[78,56],[88,30]];
+var map=document.getElementById("map"),svg=document.getElementById("lines"),out=document.getElementById("reason");
+var lit=[];
+function lines(){
+var w=map.clientWidth,h=map.clientHeight;svg.setAttribute("viewBox","0 0 "+w+" "+h);
+var pts=pos.map(function(p,i){return lit[i]?[p[0]/100*w,p[1]/100*h]:null}).filter(Boolean);
+svg.innerHTML=pts.length>1?'<polyline fill="none" stroke="#f4a6b8" stroke-opacity=".6" stroke-width="1.5" points="'+pts.map(function(p){return p.join(",")}).join(" ")+'"/>':"";}
+reasons.forEach(function(r,i){
+var b=document.createElement("button");b.className="star";b.setAttribute("aria-pressed","false");b.setAttribute("aria-label",r[0]);
+b.style.left=pos[i][0]+"%";b.style.top=pos[i][1]+"%";
+b.addEventListener("click",function(){lit[i]=true;b.setAttribute("aria-pressed","true");out.textContent=r[0]+": "+r[1];lines();});
+map.appendChild(b);});
+window.addEventListener("resize",lines);
+
+var d=document.getElementById("date"),days=document.getElementById("days"),txt=document.getElementById("dayText");
+try{var s=localStorage.getItem("simal-date");if(s)d.value=s;}catch(e){}
+function calc(){
+if(!d.value)return;
+var diff=Math.floor((Date.now()-new Date(d.value+"T00:00:00").getTime())/864e5);
+if(diff<0){days.textContent="0";txt.textContent="Bu tarih henüz gelmedi.";return;}
+days.textContent=diff;txt.textContent="gündür seninleyim ve her gün biraz daha seviyorum.";
+try{localStorage.setItem("simal-date",d.value);}catch(e){}}
+d.addEventListener("change",calc);calc();
+
+var c=document.getElementById("sky"),x=c.getContext("2d"),S=[],W,H;
+function size(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight}
+size();window.addEventListener("resize",size);
+for(var k=0;k<90;k++)S.push({x:Math.random(),y:Math.random(),r:Math.random()*1.4+.3,p:Math.random()*6});
+function draw(t){
+x.clearRect(0,0,W,H);
+S.forEach(function(s){x.fillStyle="rgba(234,242,255,"+(0.35+0.4*Math.sin(t/900+s.p))+")";x.beginPath();x.arc(s.x*W,s.y*H,s.r,0,6.3);x.fill();});
+requestAnimationFrame(draw);}
+if(window.matchMedia("(prefers-reduced-motion:reduce)").matches)draw(0);else requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
